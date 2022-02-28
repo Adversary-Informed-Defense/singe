@@ -9,7 +9,7 @@ This package runs SIGMA rules on event logs and supports a framework for adding 
 ## Testing
 
 ```bash
-cd pkg/singe/test/
+cd test
 go test
 ```
 
