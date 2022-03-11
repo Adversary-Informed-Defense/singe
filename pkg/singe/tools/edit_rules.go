@@ -11,7 +11,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// mapToKey returns the matching key for the value arguement in the mapping
+// mapToKey returns the matching key for the value argument in the mapping
 func mapToKey(valStr string, mapping objx.Map) (string, bool) {
 	for key, val := range mapping {
 		if val == valStr && !(strings.Contains(key, "#")) {
@@ -21,7 +21,7 @@ func mapToKey(valStr string, mapping objx.Map) (string, bool) {
 	return "", false
 }
 
-// mapToVal returns the matching value for the key arguement in the mapping
+// mapToVal returns the matching value for the key argument in the mapping
 func mapToVal(keyStr string, mapping objx.Map) (interface{}, bool) {
 	for key, val := range mapping {
 		if key == keyStr && !(strings.Contains(key, "#")) {
@@ -31,7 +31,7 @@ func mapToVal(keyStr string, mapping objx.Map) (interface{}, bool) {
 	return nil, false
 }
 
-// editRule uses the mapping arguement to replace the field names of the Sigma rule's identifiers
+// editRule uses the mapping argument to replace the field names of the Sigma rule's identifiers
 func editRule(rule sigma.Rule, mapping objx.Map) sigma.Rule {
 	newDetection := sigma.Detection{}
 	// Iterate over each detection condition of the rule
