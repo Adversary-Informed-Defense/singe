@@ -46,14 +46,10 @@ type SigmaEngine struct {
 	ruleset *sigma.Ruleset
 }
 
+// CreateEngine returns a SigmaEngine struct instance with the ruleset defined by the Sigma rules in the directory at the path argument
 func CreateEngine(path string) SigmaEngine {
 	ruleset := tools.LoadRules(path)
 	return SigmaEngine{ruleset}
-}
-
-type OutputMessage struct {
-	Event  sigma.Event
-	Result sigma.Results
 }
 
 // Match evaluates a log message against a Sigma ruleset, returning whether at least one match occurred and the list of matching rules, if any
@@ -66,9 +62,35 @@ func (s SigmaEngine) Match(msg string, vendor string) ([]byte, bool, error) {
 		return nil, false, err
 	}
 	// Match event against Sigma rules
-	if res, matched := s.ruleset.EvalAll(event); matched {
-		// Handle match
-		output, err := json.Marshal(OutputMessage{event, res})
+	if results, matched := s.ruleset.EvalAll(event); matched {
+		outputResult := EngineResult{
+			Count: len(results),
+		}
+		var allTags []string
+		var allIDs []string
+
+		// Parse Sigma rule match data
+		for _, res := range results {
+			allTags = append(allTags, res.Tags...)
+			allIDs = append(allIDs, res.ID)
+
+			rule := Rule{
+				RuleData{
+					ID:    res.ID,
+					Title: res.Title,
+					Tags:  res.Tags,
+				},
+			}
+			outputResult.MatchList = append(outputResult.MatchList, rule)
+		}
+
+		// Remove repeated tags
+		outputResult.TagList = tools.RemoveStringDuplicates(allTags)
+
+		// Should not be possible to see duplicate IDs
+		outputResult.IDList = allIDs
+
+		output, err := json.Marshal(OutputMessage{event, outputResult})
 		if err != nil {
 			return nil, false, err
 		}
@@ -84,7 +106,6 @@ func mapVendor(vendor string) LogType {
 		return StringType
 	}
 	lType := toLogType(strType.String())
-
 	return lType
 }
 

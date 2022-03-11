@@ -107,3 +107,16 @@ func LoadRules(path string) *sigma.Ruleset {
 	)
 	return ruleset
 }
+
+// RemoveStringDuplicates returns the string array argument with all duplicate values removed
+func RemoveStringDuplicates(arr []string) []string {
+	keys := make(map[string]bool)
+	var output []string
+	for _, elem := range arr {
+		if _, val := keys[elem]; !val {
+			keys[elem] = true
+			output = append(output, elem)
+		}
+	}
+	return output
+}
