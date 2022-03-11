@@ -4,5 +4,5 @@ package singe
 
 var vendorMapStr = `{
 	"string": "StringType",
-	"json": "JSONType",
+	"json": "JSONType"
 }`
