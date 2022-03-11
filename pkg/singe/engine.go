@@ -11,7 +11,15 @@ import (
 )
 
 // Load embedded vendor to log type mapping
-var vendorMapping, _ = objx.FromJSON(vendorMapStr)
+var vendorMapping objx.Map
+
+func init() {
+	mapping, err := objx.FromJSON(vendorMapStr)
+	if err != nil {
+		panic(err)
+	}
+	vendorMapping = mapping
+}
 
 // LogType represents the enumerated event log types
 type LogType int64
